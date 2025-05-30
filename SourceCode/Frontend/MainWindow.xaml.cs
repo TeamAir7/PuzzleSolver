@@ -98,6 +98,11 @@ namespace PuzzleSolverFrontend
 
                 StatusBarText.Text = "Solving puzzle...";
                 SolutionText.Text = "";
+                TimeText.Text = "0 ms";
+
+                // Create stopwatch to measure computation time
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
 
                 // Run Python process
                 using (Process process = Process.Start(start))
@@ -113,11 +118,15 @@ namespace PuzzleSolverFrontend
                     string errors = process.StandardError.ReadToEnd();
 
                     process.WaitForExit();
+                    stopwatch.Stop(); // Stop timing after process completes
+
+                    // Update time display
+                    TimeText.Text = $"{stopwatch.ElapsedMilliseconds} ms";
 
                     if (!string.IsNullOrEmpty(errors))
                     {
                         SolutionText.Text = errors;
-                        StatusBarText.Text = "Solution Found";
+                        StatusBarText.Text = "Error occurred";
                     }
                     else
                     {
